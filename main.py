@@ -10,16 +10,28 @@ from dotenv import load_dotenv
 def clear_memory():
     dir = os.path.dirname(__file__)
     nexus = os.path.join(dir, 'memory','nexus')
-    empty_folder(nexus)
+    if os.path.isdir(nexus):
+        empty_folder(nexus)
+    else:
+        os.mkdir(nexus)
     dir = os.path.dirname(__file__)
     text_and_docs = os.path.join(dir, 'memory','text&docs')
-    empty_folder(text_and_docs)
+    if os.path.isdir(text_and_docs):
+        empty_folder(text_and_docs)
+    else:
+        os.mkdir(text_and_docs)
     dir = os.path.dirname(__file__)
     thinking_process = os.path.join(dir, 'memory','thinking_process')
-    empty_folder(thinking_process)
+    if os.path.isdir(thinking_process):
+        empty_folder(thinking_process)
+    else:
+        os.mkdir(thinking_process)
     dir = os.path.dirname(__file__)
     vdb = os.path.join(dir, 'memory','vdb')
-    empty_folder(vdb)
+    if os.path.isdir(vdb):
+        empty_folder(vdb)
+    else:
+        os.mkdir(vdb)
 
 def main():
     # Our chatbot will generate new response based on 15 most relevant previous conversations
