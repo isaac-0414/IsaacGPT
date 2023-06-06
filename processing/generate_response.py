@@ -9,7 +9,7 @@ import textwrap
 
 
 def generate_response(conversation, user_input, engine='text-davinci-003', temp=0.0, top_p=1.0, tokens=400, freq_pen=0.0, pres_pen=0.0):
-    url = input('Please give me a URL of a webpage for reference: ')
+    url = input('ISAAC: Please give me a URL of a webpage for reference: ')
     url = url.strip()
     #### Fetch and download the webpage
     with Spinner("Fetching webpages... "):

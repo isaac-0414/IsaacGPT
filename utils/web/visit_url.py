@@ -5,8 +5,8 @@ def fetch_HTML_content_from_url(url: str, save_file_path: str):
         response = requests.get(url)
         html_content = response.text
 
-        with open(save_file_path, 'w', encoding='utf-8') as outfile:
-            outfile.write(html_content)
+        # with open(save_file_path, 'w', encoding='utf-8') as outfile:
+        #     outfile.write(html_content)
 
         return html_content
         
