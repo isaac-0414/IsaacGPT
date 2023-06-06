@@ -1,7 +1,7 @@
 # IsaacGPT
 experiment of my GPT model
 
-## Run on windows
+## Run on Windows
 1. cd to the project folder
 2. run the following command
 ```console
