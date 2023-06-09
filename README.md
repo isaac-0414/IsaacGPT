@@ -1,5 +1,5 @@
 # IsaacGPT
-experiment of my GPT model
+(Experimental) Machine learning model able to give precise answer based on webpage
 
 First change the .env.template file to .env, and put your openai API key there
 
