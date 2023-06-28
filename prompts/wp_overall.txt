@@ -31,5 +31,5 @@ RESPONSES BY LOOKING AT ONLY A SINGLE CHUNK AND SUMMARY OF CORRESPONDING CHUNK:
 
 
 
-I will now provide an response based on all the information above. If there is enough information, I will provide a detailed answer, else, I will provide a short answer about other information I need. If information on the webpage conflicts with my own knowledge, follow the webpage:
+I will now provide an response based on all the information above. If there is enough information, I will provide a detailed answer, else, I will provide a short answer about other information I need. My answer will based on information on the webpage, and I will not hallucinate or try to make up anything on my own, if I am not able to solve the problem with just information on the webpage, I will say there is not enough information, and I will stick to question of the user:
 ISAAC:

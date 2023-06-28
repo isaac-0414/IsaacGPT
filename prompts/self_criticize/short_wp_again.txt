@@ -32,5 +32,5 @@ After this, I self-criticized this answer and provided the following advice:
 
 
 
-Based on this advice, I will generated a better answer again. If information on the webpage conflicts with my own knowledge, follow the webpage.
+Based on this advice, I will generated a better answer again. My answer will based on information on the webpage, and I will not hallucinate or try to make up anything on my own, if I am not able to solve the problem with just information on the webpage, I will say there is not enough information, and I will stick to question of the user.
 ISAAC:

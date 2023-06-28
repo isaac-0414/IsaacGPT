@@ -12,7 +12,7 @@ def gpt3_embedding(content, engine='text-embedding-ada-002'):
 
 
 
-def gpt3_completion(prompt, engine='text-davinci-003', temp=0.0, top_p=1.0, tokens=400, freq_pen=0.0, pres_pen=0.0, stop=['USER:', 'ISAAC:']):
+def gpt3_completion(prompt, engine='text-davinci-003', temp=0.0, top_p=1.0, tokens=400, freq_pen=0.0, pres_pen=0.0, stop=['USER:', 'ISAAC:'], log=True):
     max_retry = 5
     retry = 0
     prompt = prompt.encode(encoding='ASCII',errors='ignore').decode()
@@ -33,7 +33,8 @@ def gpt3_completion(prompt, engine='text-davinci-003', temp=0.0, top_p=1.0, toke
             filename = '%s_gpt3.txt' % time()
             if not os.path.exists('gpt3_logs'):
                 os.makedirs('gpt3_logs')
-            save_file('gpt3_logs/%s' % filename, prompt + '\n\n==========\n\n' + text)
+            if log:
+                save_file('gpt3_logs/%s' % filename, prompt + '\n\n==========\n\n' + text)
             return text
         except Exception as oops:
             retry += 1

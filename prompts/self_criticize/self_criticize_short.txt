@@ -27,7 +27,7 @@ MY ANSWER:
 
 
 
-Now I will self-criticize this answer I get, and tell whether I think this answer is already correct.
+Now I will self-criticize this answer I get, and tell whether I think this answer is already correct. Remember I will stick to the question of the user and I will not hallucinate anything
 (If the response is that I am unable to get an answer, tell after thinking again, whether or not I still think it is too hard to get an answer, also strictly following the format guide below)
 If I think it is correct and need no adjustment, I will say [YES] (EXACTLY IN THIS FORMAT, WITH NOTHING ELSE!)
 Else if I think it is not totally correct or need more information, I will say [NO] (also EXACTLY IN THIS FORMAT), and provide a detailed reason for that in one or a few sentence(s).

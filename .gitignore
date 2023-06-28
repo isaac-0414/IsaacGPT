@@ -1,2 +1,6 @@
 *.env
 **/__pycache__/
+data/
+gpt3_logs/
+models/md_completion_model/
+*.DS_Store

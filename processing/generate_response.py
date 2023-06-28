@@ -1,5 +1,5 @@
 from utils.gpt3 import gpt3_completion
-from utils.web.visit_url import fetch_HTML_content_from_url
+from utils.web.URLloader import URLLoader
 from utils.web.html_util import get_body_from_html
 from utils.animations.spinner import Spinner
 from utils.file_io import open_file
@@ -13,21 +13,22 @@ def generate_response(conversation, user_input, engine='text-davinci-003', temp=
     url = url.strip()
     #### Fetch and download the webpage
     with Spinner("Fetching webpages... "):
-        save_wp_path=os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'memory', 'webpages', 'index.html'))
-        html_content = fetch_HTML_content_from_url(url=url, save_file_path=save_wp_path)
-        html_body_content = get_body_from_html(html_content)
+        loader = URLLoader(urls=[url], headless=True)
+        webpage = loader.load()
+        webpage_content = webpage[0].page_content
+    
     # If webpage short, look at the entire webpage and try to solve the problem
-    if len(html_body_content) <= 4000:
+    if len(webpage_content) <= 4000:
         with Spinner('Thinking and generating response...'):
             file_path=os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'prompts', 'short_wp.txt'))
-            prompt_short_wp = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', html_body_content)
+            prompt_short_wp = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', webpage_content)
             final = gpt3_completion(prompt_short_wp, engine, temp, top_p, tokens, freq_pen, pres_pen, stop=['USER:', 'ISAAC:'])
         #### Self criticize this answer
         with Spinner("Self criticizing this answer..."):
             # I added this for loop in case GPT make a mistake, returned results not in the desired format, I will give it 2 chances.
             for i in range(3):
                 file_path=os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'prompts', 'self_criticize', 'self_criticize_short.txt'))
-                prompt_self_criticize = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', html_body_content).replace('<<MY ANSWER>>', final)
+                prompt_self_criticize = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', webpage_content).replace('<<MY ANSWER>>', final)
                 criticism = gpt3_completion(prompt_self_criticize, engine, temp, top_p, tokens, freq_pen, pres_pen, stop=['USER:', 'ISAAC:'])
                 if criticism.startswith("[YES]") or criticism.startswith("[NO]"):
                     break
@@ -43,7 +44,7 @@ def generate_response(conversation, user_input, engine='text-davinci-003', temp=
                 # The result is not good, split advice from the result and generate answer again
                 advice = criticism[4:]
                 file_path=os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'prompts', 'self_criticize', 'short_wp_again.txt'))
-                prompt_short_wp_again = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', html_body_content).replace('<<MY ANSWER>>', final).replace('<<MY ADVICE>>', advice)
+                prompt_short_wp_again = open_file(file_path).replace('<<CONVERSATION>>', conversation).replace('<<MESSAGE>>', user_input).replace('<<WEBPAGE>>', webpage_content).replace('<<MY ANSWER>>', final).replace('<<MY ADVICE>>', advice)
                 criticism = gpt3_completion(prompt_short_wp_again, engine, temp, top_p, tokens, freq_pen, pres_pen, stop=['USER:', 'ISAAC:'])
         else:
             raise RuntimeError("This is not supposed to happen, an RuntimeError should have be raised already")
@@ -51,10 +52,10 @@ def generate_response(conversation, user_input, engine='text-davinci-003', temp=
     else:
         with Spinner("Reading at the webpage in detail and try to get an answer..."):
             #### First try to summarize the webpage to get an overall idea
-            overall_idea = summarize(html_body_content, length=4)
+            overall_idea = summarize(webpage_content, length=4)
             
             #### Then divide webpage into chunks and look into each chunk
-            chunks = textwrap.wrap(html_body_content, 4000)
+            chunks = textwrap.wrap(webpage_content, 4000)
             responses_n_summaries = list()
             for idx, chunk in enumerate(chunks):
                 # generating summary of each chunk for later step
