@@ -1,3 +1,6 @@
+"""
+similarity between two vectors(embeddings), not used in the final version
+"""
 import numpy as np
 from numpy.linalg import norm
 

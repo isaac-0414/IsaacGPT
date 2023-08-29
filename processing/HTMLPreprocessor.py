@@ -9,7 +9,7 @@ from utils.gpt import gpt4_chat
 
 logger = logging.getLogger(__name__)
 
-def _html2md(soup):
+def _html2md(soup: BeautifulSoup) -> str:
     simple_tree = soup.prettify() 
     markdown = html2text(str(simple_tree))
     markdown = remove_links(markdown)
@@ -30,7 +30,12 @@ def _have_at_least_one_same_class(classes1: List, classes2: List) -> bool:
 
 
 class HTMLPreprocessor:
-
+    """
+    preprocess HTML to markdown and "lists".
+    Clean the webpage(remove useless elements that will lower performance of LLM)
+    Also split the webpage to chunks.
+    """
+    
     def __init__(
         self,
         html: str,
@@ -50,7 +55,10 @@ class HTMLPreprocessor:
         self.preprocess()
     
 
-    def preprocess(self):
+    def preprocess(self) -> None:
+        """
+        Called when the instance created, preprocess the HTML to everything we need
+        """
         self.soup = BeautifulSoup(
             "".join(s.strip() for s in self.html_source.split("\n")),
             "html.parser",
@@ -82,6 +90,9 @@ class HTMLPreprocessor:
 
 
     def find_hyperlinks(self) -> list[str]:
+        """
+        Find all the hyperlinks on this page, result will be both returned and stored in self.hyperlinks
+        """
         if not self.base_url:
             return
         links = self.soup.find_all('a', href=True)
@@ -102,6 +113,9 @@ class HTMLPreprocessor:
     
 
     def extract_header_footer(self) -> None:
+        """
+        Try to find header and footer, store them and remove them in the markdown doc
+        """
         header = self.soup.find('header')
         if not header:
             header = self.soup.find(class_='header')
@@ -123,6 +137,9 @@ class HTMLPreprocessor:
     
 
     def extract_sidebar(self) -> None:
+        """
+        Try to remove sidebar on the page, often not work
+        """
         def extract_sidebar_helper(node):
             if (node.has_attr('class') and 'sidebar' in node['class']) or (node.has_attr('id') and 'sidebar' == node['id']): 
                 md = _html2md(node)
@@ -135,6 +152,9 @@ class HTMLPreprocessor:
 
 
     def extract_hidden(self) -> None:
+        """
+        Remove all the invisible elements on the page
+        """
         def extract_hidden_helper(node):
             if isinstance(node, str) or len(node.find_all(recursive=False)) == 0:
                 return
@@ -152,6 +172,12 @@ class HTMLPreprocessor:
 
 
     def get_lists(self, threshold=5) -> None:
+        """
+        Get all the "lists" in the webpage, go to my research report for more information on "lists"
+
+        Parameters:
+        threshold: minimum number of elements a list need to have.
+        """
         # this helper function is for pre-order traversal
         def get_lists_helper(node: BeautifulSoup, threshold: int) -> None:
             if isinstance(node, str) or len(node.find_all(recursive=False)) == 0:
@@ -283,6 +309,15 @@ class HTMLPreprocessor:
         get_lists_helper(self.soup.body, threshold)
 
     def build_lists_split(self, window_size: int=6000) -> List[str]:
+        """
+        Create split of lists, each two element would be separated by a  "______"
+
+        Parameters:
+        window_size (int): the length of each chunk of split in number of characters
+        
+        Returns:
+        List[str]: the split
+        """
         if not self.loaded:
             raise Exception('please use the load() function before building split of lists')
         split: List[str] = []
@@ -319,6 +354,18 @@ class HTMLPreprocessor:
     
     # window size here is number of characters
     def build_split(self, window_size: int=6000, stride: int=6000) -> List[str]:
+        """
+        Split the webpage based on number of characters. See more information on the research report.
+        You can also set the overlap by the "stride"
+        argument.
+
+        Parameters:
+        window_size (int): the length of each chunk of split in number of characters
+        stride (int or None): e.g. if stride=3000, the distance between the starts of two chunks are 3000 characters.
+
+        Returns:
+        List[str]: the split
+        """
         if len(self.complete_markdown) < window_size:
             return [self.complete_markdown]
         def build_split_helper(node, window_size) -> List[str]:
@@ -360,7 +407,10 @@ class HTMLPreprocessor:
         
         return new_split
     
-    def summarize(self):
+    def summarize(self) -> str:
+        """
+        Summarize the webpage in map-reduce style
+        """
         split = self.build_split(window_size=20000)
         if len(split) == 1:
             system_msg = f'This is content of the webpage "{self.title}":\n\n{self.complete_markdown}'
@@ -379,13 +429,19 @@ class HTMLPreprocessor:
             return gpt4_chat(system_msg, user_msg)
          
     
-    def save_source(self, file_path):
+    def save_source(self, file_path) -> None:
+        """
+        Save HTML source code
+        """
         if not self.html_source:
             raise ValueError('No HTML source currently, please use load() function first')
         with open(file_path, 'w') as f:
             f.write(self.html_source)
     
-    def save_markdown(self, file_path):
+    def save_markdown(self, file_path) -> None:
+        """
+        Save processed markdown
+        """
         if not self.complete_markdown:
             raise ValueError('No markdown currently, please use load() function first')
         with open(file_path, 'w') as f:

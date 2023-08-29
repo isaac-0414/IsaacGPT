@@ -1,3 +1,6 @@
+"""
+Implementation of a vector database, not used in the final version
+"""
 from .similarity import cosine_similarity
 import json
 import os
