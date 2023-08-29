@@ -20,15 +20,16 @@ class VDB:
             scores.append({'content': i['content'], 'score': score})
         ordered = sorted(scores, key=lambda d: d['score'], reverse=True)
         ordered_content = [x['content'] for x in ordered]
-        return ordered_content[0:count]
+        return scores
 
     # insert data into the vector database
     def insert_index(self, in_data):
+        # if not isinstance(in_data, dict) or in_data["content"] is None or in_data["vector"] is None:
+        #     raise ValueError("input when inserting to vector database should be a dict {'content': ..., 'vector': ...}")
         data = []
         # Read existing data from file
-        if os.path.exists(self.vdb_file):
-            with open(self.vdb_file, 'r') as infile:
-                data = json.load(infile)
+        with open(self.vdb_file, 'r') as infile:
+            data = json.load(infile)
 
         # append new data to the end of old data
         if isinstance(in_data, list):

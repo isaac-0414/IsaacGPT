@@ -1,0 +1,22 @@
+remove all the punctuations or numbers at the beginning of each line.
+
+For example:
+
+1. Sakanaya
+2. Basil Thai
+
+Should be modified to:
+
+Sakanaya
+Basil Thai
+
+
+- Reading Day
+- Spring Break
+Summer Break
+
+Should be modified to
+
+Reading Day
+Spring Break
+Summer Break

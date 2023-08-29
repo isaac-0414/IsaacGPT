@@ -1,0 +1,11 @@
+Can you output the best keyword in the question to be used to search a webpage to locate related context?
+For the question type "Find all the something", output that something. If keyword is plural form, convert to singular form.
+For the question about property of someone/something, output that someone/something, instead of any words in the property.
+If there is no keyword, say "NONE".
+
+For example, for the question "Find all the Assistant Professors", keyword is Assistant Professor.
+for the question "Who is the Thesis Advisor of John Doe", keyword is John Doe.
+for the question "Is John Doe an Assistant Professor", keyword is John Doe.
+for the question "What's the size of front head room", keyword is front head room.
+for the question "Is Adam Bates the Thesis Advisor of John Doe", keyword is John Doe.
+for the question "Summarize this webpage", there is no keyword, say NONE.

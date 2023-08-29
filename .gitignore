@@ -4,3 +4,7 @@ data/
 gpt3_logs/
 models/md_completion_model/
 *.DS_Store
+test.py
+test.html
+legacy/
+gpt_logs/

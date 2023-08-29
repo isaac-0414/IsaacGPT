@@ -1,0 +1,4 @@
+Here are answers to the question "<<QUESTION>>" for each part of a webpage.
+If one answer is None, it means there is no answer in that part.
+answers:
+<<ANSWERS>>
